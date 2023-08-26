@@ -1,39 +1,47 @@
-import { Divider, Input, Button } from 'antd';
-import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Divider, Input } from 'antd';
 
-function AddFoodForm({ addFood }) {
-  const [name, setName] = useState('');
-  const [image, setImage] = useState('');
-  const [calories, setCalories] = useState('');
-  const [servings, setServings] = useState('');
+import {
+  changeName,
+  changeImage,
+  changeCalories,
+  changeServings,
+  addFood,
+} from '../store';
 
-  const handleNameChange = (e) => {
-    setName(e.target.value);
+function AddFoodForm() {
+  const dispatch = useDispatch();
+  const { name, image, calories, servings } = useSelector((state) => {
+    return {
+      name: state.form.name,
+      image: state.form.image,
+      calories: state.form.calories,
+      servings: state.form.servings,
+    };
+  });
+
+  const handleNameChange = (event) => {
+    dispatch(changeName(event.target.value));
   };
-  const handleImageChange = (e) => {
-    setImage(e.target.value);
+  const handleImageChange = (event) => {
+    dispatch(changeImage(event.target.value));
   };
 
-  const handleCaloriesChange = (e) => {
-    setCalories(e.target.value);
+  const handleCaloriesChange = (event) => {
+    dispatch(changeCalories(event.target.value));
   };
 
-  const handleServingChange = (e) => {
-    setServings(e.target.value);
+  const handleServingsChange = (event) => {
+    dispatch(changeServings(event.target.value));
   };
 
-  const handleFormSubmit = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    const newFood = { name, image, calories, servings };
-    addFood(newFood);
-    setName('');
-    setImage('');
-    setCalories('');
-    setServings('');
+    dispatch(addFood({ name, image, calories, servings }));
   };
 
   return (
-    <form onSubmit={handleFormSubmit}>
+    <form onSubmit={handleSubmit}>
       <Divider>Add Food Entry</Divider>
 
       <label>Name</label>
@@ -45,8 +53,8 @@ function AddFoodForm({ addFood }) {
       <label>Calories</label>
       <Input value={calories} type="number" onChange={handleCaloriesChange} />
 
-      <label>Serving</label>
-      <Input value={servings} type="number" onChange={handleServingChange} />
+      <label>Servings</label>
+      <Input value={servings} type="number" onChange={handleServingsChange} />
 
       <button type="submit">Create</button>
     </form>
